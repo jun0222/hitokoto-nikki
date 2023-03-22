@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ひとこと日記</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f2f2f2;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+      }
+      h1 {
+        text-align: center;
+        color: #4a4a4a;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      input,
+      textarea {
+        margin-bottom: 10px;
+        padding: 8px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #4a4a4a;
+        color: #ffffff;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        border-bottom: 1px solid #cccccc;
+        padding: 10px 0;
+      }
+      .date {
+        font-size: 12px;
+        color: #999999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ひとこと日記</h1>
+      <form id="diaryForm">
+        <textarea id="content" rows="4" placeholder="内容" required></textarea>
+        <button
+          type="submit"
+          style="margin-bottom: 12px; background-color: #4a4a4a"
+        >
+          追加
+        </button>
+        <button
+          type="button"
+          onclick="downloadDiary()"
+          style="margin-bottom: 12px; background-color: #4a4a4a"
+        >
+          CSVダウンロード
+        </button>
+        <button
+          type="button"
+          onclick="clearDiary()"
+          style="background-color: crimson"
+        >
+          全て削除
+        </button>
+      </form>
+      <ul id="diaryList"></ul>
+    </div>
+
+    <script>
+      // dateをJSTの日付文字列に変換する
+      function formatDateJST(date) {
+        const y = date.getFullYear();
+        const m = ("00" + (date.getMonth() + 1)).slice(-2);
+        const d = ("00" + date.getDate()).slice(-2);
+        const h = ("00" + date.getHours()).slice(-2);
+        const min = ("00" + date.getMinutes()).slice(-2);
+        const sec = ("00" + date.getSeconds()).slice(-2);
+
+        return `${y}-${m}-${d} ${h}:${min}:${sec}`;
+      }
+
+      // listitemをローカルストレージに保存する
+      function saveDiary() {
+        const diaryList = document.getElementById("diaryList");
+        localStorage.setItem("diaryList", diaryList.innerHTML);
+      }
+
+      // ローカルストレージからlistitemを読み込む
+      function loadDiary() {
+        const diaryList = document.getElementById("diaryList");
+        diaryList.innerHTML = localStorage.getItem("diaryList");
+      }
+      loadDiary();
+
+      // listitemを全て削除する
+      function clearDiary() {
+        const diaryList = document.getElementById("diaryList");
+        diaryList.innerHTML = "";
+        saveDiary();
+      }
+
+      // listitemをcsvファイルとしてダウンロードする
+      function downloadDiary() {
+        const diaryList = document.getElementById("diaryList");
+        const csv = ["内容,日付"];
+        const listItems = diaryList.querySelectorAll("li");
+        listItems.forEach((listItem) => {
+          const content = listItem.querySelector("p").textContent;
+          const date = listItem.querySelector(".date").textContent;
+          csv.push(`${content},${date}`);
+        });
+        const csvStr = csv.join("\n");
+        const blob = new Blob([csvStr], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        // jstの日付文字列をファイル名にする
+        const date = formatDateJST(new Date());
+        a.download = `diary_${date}.csv`;
+        document.body.appendChild(a);
+        a.click();
+      }
+
+      // formを送信したときの処理
+      document
+        .getElementById("diaryForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const content = document.getElementById("content");
+          const diaryList = document.getElementById("diaryList");
+          const date = formatDateJST(new Date());
+
+          if (content.value.trim() !== "") {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `
+        <p>${content.value}</p>
+        <p class="date">${date}</p>
+      `;
+            diaryList.prepend(listItem);
+            saveDiary();
+            content.value = "";
+          }
+        });
+    </script>
+  </body>
+</html>
