@@ -122,12 +122,14 @@
       // listitemをtxtファイルとしてダウンロードする
       function downloadDiary() {
         const diaryList = document.getElementById("diaryList");
-        const text = ["内容,日付"];
+        // const text = ["内容,日付"];
+        const text = [];
         const listItems = diaryList.querySelectorAll("li");
         listItems.forEach((listItem) => {
           const content = listItem.querySelector("p").textContent;
           const date = listItem.querySelector(".date").textContent;
-          text.push(`${content},${date}`);
+          // text.push(`${content},${date}`);
+          text.push(`${content}`);
         });
         const txtStr = text.join("\n");
         const blob = new Blob([txtStr], { type: "text/plain;charset=utf-8" });
