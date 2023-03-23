@@ -72,7 +72,7 @@
           onclick="downloadDiary()"
           style="margin-bottom: 12px; background-color: #4a4a4a"
         >
-          CSVダウンロード
+          ダウンロード
         </button>
         <button
           type="button"
@@ -113,29 +113,30 @@
 
       // listitemを全て削除する
       function clearDiary() {
+        if (!confirm("全て削除しますか？")) return;
         const diaryList = document.getElementById("diaryList");
         diaryList.innerHTML = "";
         saveDiary();
       }
 
-      // listitemをcsvファイルとしてダウンロードする
+      // listitemをtxtファイルとしてダウンロードする
       function downloadDiary() {
         const diaryList = document.getElementById("diaryList");
-        const csv = ["内容,日付"];
+        const text = ["内容,日付"];
         const listItems = diaryList.querySelectorAll("li");
         listItems.forEach((listItem) => {
           const content = listItem.querySelector("p").textContent;
           const date = listItem.querySelector(".date").textContent;
-          csv.push(`${content},${date}`);
+          text.push(`${content},${date}`);
         });
-        const csvStr = csv.join("\n");
-        const blob = new Blob([csvStr], { type: "text/csv" });
+        const txtStr = text.join("\n");
+        const blob = new Blob([txtStr], { type: "text/plain;charset=utf-8" });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
         // jstの日付文字列をファイル名にする
         const date = formatDateJST(new Date());
-        a.download = `diary_${date}.csv`;
+        a.download = `diary_${date}.txt`;
         document.body.appendChild(a);
         a.click();
       }
