@@ -62,10 +62,11 @@
       <form id="diaryForm">
         <textarea id="content" rows="4" placeholder="内容" required></textarea>
         <button
+          id="submitButton"
           type="submit"
           style="margin-bottom: 12px; background-color: #4a4a4a"
         >
-          追加
+          追加（shift + enter）
         </button>
         <button
           type="button"
@@ -142,6 +143,22 @@
         document.body.appendChild(a);
         a.click();
       }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // input要素に対する'keydown'イベントを追加
+        document
+          .getElementById("content")
+          .addEventListener("keydown", function (event) {
+            // イベントが'Shift'キーと'Enter'キーによって同時にトリガされた場合
+            if (
+              event.shiftKey &&
+              (event.key === "Enter" || event.keyCode === 13)
+            ) {
+              // ボタンをクリックしたことにする
+              document.getElementById("submitButton").click();
+            }
+          });
+      });
 
       // formを送信したときの処理
       document
