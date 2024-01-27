@@ -123,13 +123,13 @@
       // listitemをtxtファイルとしてダウンロードする
       function downloadDiary() {
         const diaryList = document.getElementById("diaryList");
-        const text = ["内容,日付"];
-        // const text = [];
+        // const text = ["内容,日付"];
+        const text = [];
         const listItems = diaryList.querySelectorAll("li");
         listItems.forEach((listItem) => {
           const content = listItem.querySelector("p").textContent;
           const date = listItem.querySelector(".date").textContent;
-          text.push(`${content},${date}`);
+          text.push(`─────────────────────────────\n▼${date}\n\n${content}`);
           // text.push(`${content}`);
         });
         const txtStr = text.join("\n");
@@ -139,7 +139,7 @@
         a.href = url;
         // jstの日付文字列をファイル名にする
         const date = formatDateJST(new Date());
-        a.download = `diary_${date}.csv`;
+        a.download = `diary_${date}.txt`;
         document.body.appendChild(a);
         a.click();
       }
