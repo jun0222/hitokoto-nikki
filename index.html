@@ -154,6 +154,8 @@
               event.shiftKey &&
               (event.key === "Enter" || event.keyCode === 13)
             ) {
+              // デフォルトのイベントをキャンセル
+              event.preventDefault();
               // ボタンをクリックしたことにする
               document.getElementById("submitButton").click();
             }
