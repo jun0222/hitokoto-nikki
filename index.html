@@ -70,6 +70,13 @@
         </button>
         <button
           type="button"
+          onclick="copyToClipboard()"
+          style="margin-bottom: 12px; background-color: #4a4a4a"
+        >
+          クリップボードにコピー
+        </button>
+        <button
+          type="button"
           onclick="downloadDiary()"
           style="margin-bottom: 12px; background-color: #4a4a4a"
         >
@@ -118,6 +125,29 @@
         const diaryList = document.getElementById("diaryList");
         diaryList.innerHTML = "";
         saveDiary();
+      }
+
+      // ダイアリーの内容をクリップボードにコピーする
+      function copyToClipboard() {
+        const diaryList = document.getElementById("diaryList");
+        const text = [];
+        const listItems = diaryList.querySelectorAll("li");
+        listItems.forEach((listItem) => {
+          const content = listItem.querySelector("p").textContent;
+          const date = listItem.querySelector(".date").textContent;
+          text.push(`────────────────────\n▼${date}\n\n${content}`);
+        });
+        const txtStr = text.join("\n");
+
+        // クリップボードにテキストをコピー
+        navigator.clipboard
+          .writeText(txtStr)
+          .then(() => {
+            alert("クリップボードにコピーしました！");
+          })
+          .catch((err) => {
+            console.error("クリップボードにコピーできませんでした: ", err);
+          });
       }
 
       // listitemをtxtファイルとしてダウンロードする
